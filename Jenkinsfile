@@ -1,4 +1,9 @@
 pipeline {
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
   agent {
     kubernetes {
       yaml '''
@@ -20,12 +25,19 @@ pipeline {
     }
   }
   stages {
+      stage('checkout'){
+          steps{
+              checkout scmGit(branches: [[name: 'main']], extensions: [], 
+              userRemoteConfigs: [[credentialsId: 'jenkinsgithub', url: 'https://github.com/sanjeevk021995/Terraform.git']])
+          }
+      }
     stage('Run terraform') {
        // agent { label "jenkins-slave"}
       steps {
         container('terraform') {
-          sh 'terraform version'
+          sh 'terraform init'
           sh 'terraform plan'
+          sh 'terraform apply --auto-approve'
         }
       }
     }
