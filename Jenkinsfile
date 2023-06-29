@@ -6,7 +6,7 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: terrafrom
+          - name: terraform
             image: hashicorp/terraform
             command:
             - bin/cat
@@ -25,6 +25,7 @@ pipeline {
       steps {
         container('terraform') {
           sh 'terraform version'
+          sh 'terraform plan'
         }
       }
     }
