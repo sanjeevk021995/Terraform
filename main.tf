@@ -8,7 +8,7 @@ assume_role {
 }
 
 resource "aws_s3_bucket" "testbucket-sam-95" {
-  bucket = "sampledevenv"
+  bucket = "sample-dev-env-state"
 
   tags = {
     Name         = "S3 Bucket Created by TS"
