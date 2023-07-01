@@ -27,8 +27,8 @@ pipeline {
   stages {
       stage('checkout'){
           steps{
-              checkout scmGit(branches: [[name: 'main']], extensions: [], 
-              userRemoteConfigs: [[credentialsId: 'jenkinsgithub', url: 'https://github.com/sanjeevk021995/Terraform.git']])
+             checkout scmGit(branches: [[name: '*/main']], extensions: [], 
+                             userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
           }
       }
     stage('Run terraform') {
