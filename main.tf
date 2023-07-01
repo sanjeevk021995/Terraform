@@ -7,7 +7,7 @@ assume_role {
   
 }
 
-resource "aws_s3_bucket" "testbucket-sam-95" {
+/*resource "aws_s3_bucket" "testbucket-sam-95" {
   bucket = "sample-dev-env-state"
 
   tags = {
@@ -17,3 +17,4 @@ resource "aws_s3_bucket" "testbucket-sam-95" {
   }
 
 }
+*/
