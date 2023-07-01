@@ -2,6 +2,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
     }
 
   agent {
@@ -32,12 +33,11 @@ pipeline {
           }
       }
     stage('Run terraform') {
-       // agent { label "jenkins-slave"}
       steps {
         container('terraform') {
           sh 'terraform init'
-          sh 'terraform plan'
-          sh 'terraform apply --auto-approve'
+          sh 'terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+          sh 'terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
         }
       }
     }
