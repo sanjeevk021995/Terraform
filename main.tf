@@ -7,7 +7,7 @@ assume_role {
   
 }
 
-resource "aws_s3_bucket" "testbucket-sam-test" {
+/*resource "aws_s3_bucket" "testbucket-sam-test" {
   bucket = "sample-dev-env-sam95"
 
   tags = {
@@ -15,6 +15,5 @@ resource "aws_s3_bucket" "testbucket-sam-test" {
     Environment  = "Test"
     SecurityZone = "na"
   }
-
-}
+}*/
 
