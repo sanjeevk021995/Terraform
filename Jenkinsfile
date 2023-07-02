@@ -38,8 +38,12 @@ pipeline {
           sh 'terraform init'
           sh 'terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
           sh 'terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+          sh 'terraform state push -force "s3://sample-dev-env-state/terraform.tfstate"'
         }
       }
     }
+
+
+
   }
 }
