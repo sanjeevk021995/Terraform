@@ -16,7 +16,7 @@ terraform {
   }
 }
 
-/*resource "aws_s3_bucket" "testbucket-sam-test" {
+resource "aws_s3_bucket" "testbucket-sam-test" {
   bucket = "sample-dev-env-sam95"
 
   tags = {
@@ -24,5 +24,5 @@ terraform {
     Environment  = "Test"
     SecurityZone = "na"
   }
-}*/
+}
 
