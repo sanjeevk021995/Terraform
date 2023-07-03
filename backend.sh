@@ -1,4 +1,4 @@
-terraform {
+/*terraform {
   backend "s3" {
     bucket = "sample-dev-env-state"
     key    = "terraform.tfstate"
@@ -6,3 +6,4 @@ terraform {
  //   role_arn     = var.AWS_ROLE_ARN
   }
 }
+*/
