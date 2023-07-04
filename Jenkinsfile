@@ -65,7 +65,7 @@ pipeline {
         }
         }
           }
-      }
+      
     stage('Run terraform') {
       steps {
         container('terraform') {
