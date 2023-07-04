@@ -35,7 +35,9 @@ pipeline {
              checkout scmGit(branches: [[name: '*/main']], extensions: [], 
                              userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
           }
-      }stage('aws-cli'){
+      }
+      
+      stage('aws-cli'){
            agent {
     kubernetes {
       yaml '''
@@ -58,7 +60,7 @@ pipeline {
   }
   steps {
         container('aws-cli') {
-         aws configure --profile terraform && aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile terraform && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" --profile terraform && aws configure set region "us-east-2" --profile user2 && aws configure set output "table" --profile user2
+         aws configure --profile terraform && aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile terraform && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" --profile terraform && aws configure set region 'us-east-2' --profile user2 && aws configure set output "table" --profile user2
 
         }
         }
@@ -74,8 +76,5 @@ pipeline {
         }
       }
     }
-
-
-
   }
 }
