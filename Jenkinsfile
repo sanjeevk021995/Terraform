@@ -48,7 +48,7 @@ pipeline {
           - name: aws-cli
             image: amazon/aws-cli:2.12.6
             command:
-            - bin/cat
+            - cat
             tty: true
             env:
             - name: AWS_ACCESS_KEY_ID
