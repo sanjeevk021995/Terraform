@@ -61,8 +61,8 @@ pipeline {
   steps {
         container('aws-cli') {
           sh '''
-         #aws configure --profile terraform && 
-         aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile terraform && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" --profile terraform && aws configure set region 'us-east-2' --profile user2 && aws configure set output "table" --profile user2
+         aws configure set --profile terraform 
+         aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile terraform && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" --profile terraform && aws configure set region "us-east-2" --profile terraform && aws configure set output "table" --profile terraform
          aws configure list
          '''
         }
