@@ -56,11 +56,11 @@ stage('terraform init'){
        }
       }
 stage('terraform plan') {
-    when {
+    /*when {
         expression {
         ${terraform_action} == "plan" 
         }
-    }
+    }*/
       steps {
         script{
         container('terraform') {
@@ -69,8 +69,11 @@ stage('terraform plan') {
           then
                  pwd
                  cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          elif [[ ${terraform_action} == "plan" && ${resources} == "s3" ]];
+          then
+                 pwd && cd && ls -l && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
-                 terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+                echo "moving to terraform apply"
           fi
           '''
         
