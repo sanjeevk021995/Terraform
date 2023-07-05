@@ -57,7 +57,7 @@ stage('terraform init'){
       }
 stage('terraform plan') {
     when {
-        expression{
+        expression {
         ${terraform_action} == "plan" 
         }
     }
