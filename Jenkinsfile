@@ -38,7 +38,7 @@ agent {
           }
       }*/
       
-stage('terraform init'){
+/*stage('terraform init'){
      steps { 
        script{
         container('terraform') {
@@ -54,16 +54,19 @@ stage('terraform init'){
         }
         }
        }
-      }
+      }*/
 stage('terraform plan') {
       steps {
         script{
         container('terraform') {
         sh '''
-          if [[ ${terrafrom_action} == "plan" && ${resources} == "roles" ]];
+          if [[ ${terrafrom_action} == "plan" ]];
           then
-                 pwd
-                 cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+              if [[ ${resources} == "roles" ]];
+              then
+                   pwd
+                   cd ${role_path} && pwd && terraform init && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+              fi
           else
                  terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           fi
