@@ -47,6 +47,7 @@ agent {
              pwd
           else
              terraform init && pwd 
+          fi
          """
         }
         }
@@ -61,6 +62,7 @@ agent {
              cd ./roles/ && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
              terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          fi
           """
         }
       }
