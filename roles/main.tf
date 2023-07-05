@@ -15,11 +15,10 @@ variable "AWS_ROLE_ARN" {
 
 
 resource "aws_s3_bucket" "testbucket-sam-test-roles" {
-  bucket = "sample-dev-env-samtestrole-role bucket"
-
+  bucket = "sample-dev-rolebucket"
   tags = {
     Name         = "S3 Bucket Created by TS"
-    Environment  = "Test-role"
+    Environment  = "test-role"
     SecurityZone = "na"
   }
 }
