@@ -38,7 +38,7 @@ agent {
           }
       }
       
-      stage('terraform init'){
+stage('terraform init'){
   steps {
         container('terraform') {
           sh """
@@ -54,8 +54,9 @@ agent {
           }
       
           stage('terraform plan') {
-            if(${terrafrom_action} == "plan"){
       steps {
+        script{
+          if(${terrafrom_action} == "plan"){
         container('terraform') {
           sh """
           if [[${resources}=="roles"]]; then
@@ -69,11 +70,13 @@ agent {
       }
     }
    }
+  }
 
     stage('Run terraform') {
-       if(${terrafrom_action} == "apply" || ${terrafrom_action} == "destroy"){
       steps {
+        script{
         container('terraform') {
+          if(${terrafrom_action} == "apply" || ${terrafrom_action} == "destroy"){
           sh """
           if [[${resources}=="roles"]]; then
              pwd
@@ -82,6 +85,7 @@ agent {
              terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           fi
           """
+          }
         }
       }
     }
