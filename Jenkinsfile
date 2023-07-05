@@ -66,6 +66,7 @@ stage('terraform plan') {
                  cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
                  terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          fi
           '''
         }
       }
