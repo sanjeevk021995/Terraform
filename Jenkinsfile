@@ -91,8 +91,11 @@ stage('terraform plan') {
           then
                  pwd
                  cd ${role_path} && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
-          else
-                 terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          elif [[ ${terraform_action} == "apply" || ${terraform_action} == "destroy" ]];
+          then
+                 terraform plan && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          else 
+                 echo "skipping the terraform action only plan is executed"
           fi
           '''
         }
