@@ -31,30 +31,48 @@ agent {
   }
 
   stages {
-      stage('checkout'){
+     /* stage('checkout'){
           steps{
-             checkout scmGit(branches: [[name: '*/main']], extensions: [], 
+             checkout scmGit(branches: [[name: 'main']], extensions: [], 
                              userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
           }
-      }
+      }*/
       
 stage('terraform init'){
      steps { 
        script{
         container('terraform') {
-
-          if(${resources}=="roles"){
-             sh 'cd ./roles/ && pwd && terraform init'
-             sh 'pwd'
-          }
-          else {
-            sh 'terraform init && pwd'
-          }
+        sh '''
+          if [[ ${resources} == "roles" ]];
+          then
+                 cd ${role_path} && pwd && terraform init
+                 pwd
+          else 
+                 terraform init && pwd
+          fi
+          '''
         }
         }
        }
       }
-     
+stage('terraform plan') {
+      steps {
+        script{
+        container('terraform') {
+        sh '''
+          if [[ ${terrafrom_action} == "plan" && ${resources} == "roles"]];
+          then
+                 pwd
+                 cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          else
+                 terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          '''
+        }
+      }
+    }
+   }
+
+      
   }
   }
 
