@@ -71,7 +71,7 @@ stage('terraform plan') {
                  cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           elif [[ ${terraform_action} == "plan" && ${resources} == "s3" ]];
           then
-                 pwd && cd && ls -l && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+                 pwd && ls -l && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
                 echo "moving to terraform apply"
           fi
