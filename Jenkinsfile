@@ -62,11 +62,8 @@ stage('terraform plan') {
         sh '''
           if [[ ${terraform_action} == "plan" && ${resources} == "roles" ]];
           then
-          #    if [[ ${resources} == "roles" ]];
-          #    then
                  pwd
                  cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
-           #   fi
           else
                  terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           fi
@@ -76,6 +73,23 @@ stage('terraform plan') {
     }
    }
 
+      stage('terraform action') {
+      steps {
+        script{
+        container('terraform') {
+        sh '''
+          if [[ ${terraform_action} == "apply" && ${resources} == "roles" || ${terraform_action} == "destroy" && ${resources} == "roles" ]];
+          then
+                 pwd
+                 cd ${role_path} && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          else
+                 terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          fi
+          '''
+        }
+      }
+    }
+   }
       
   }
   }
