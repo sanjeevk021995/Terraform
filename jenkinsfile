@@ -39,9 +39,10 @@ agent {
       }
       
 stage('terraform init'){
- 
+     steps { 
+       script{
         container('terraform') {
-             steps {
+
           if(${resources}=="roles"){
              sh 'cd ./roles/ && pwd && terraform init'
              sh 'pwd'
@@ -51,42 +52,9 @@ stage('terraform init'){
           }
         }
         }
-          }
-      
-          stage('terraform plan') {
-      steps {
-        script{
-          
-        container('terraform') {
-          if(${terrafrom_action} == "plan" && ${resources}=="roles") {
-             sh 'pwd'
-             sh 'cd ./roles/ && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
-          }
-          else{
-             sh 'terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
-          }
-        }
+       }
       }
-    }
-   }
-
-    stage('Run terraform') {
-      steps {
-        script{
-        container('terraform') {
-          if(${terrafrom_action} == "apply" || ${terrafrom_action} == "destroy"){
-              if(${resources}=="roles"){
-             sh 'pwd'
-             sh 'cd ./roles/ && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
-              }
-          }
-          else{
-             sh 'terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
-          }
-          }
-        }
-      }
-    }
+     
   }
   }
 
