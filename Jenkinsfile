@@ -56,6 +56,7 @@ stage('terraform init'){
        }
       }
 stage('terraform plan') {
+    if( ${terraform_action} == "plan" ){
       steps {
         script{
         container('terraform') {
@@ -68,6 +69,7 @@ stage('terraform plan') {
                  terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           fi
           '''
+        }
         }
       }
     }
