@@ -56,8 +56,9 @@ stage('terraform init'){
           stage('terraform plan') {
       steps {
         script{
-          if(${terrafrom_action} == "plan"){
+          
         container('terraform') {
+          if(${terrafrom_action} == "plan"){
           sh '''
           if [[${resources}=="roles"]]; then
              pwd
