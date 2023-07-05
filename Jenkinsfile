@@ -54,7 +54,7 @@ agent {
           }
       
           stage('terraform plan') {
-            if(${terrafrom_action}=="plan"){
+            if(${terrafrom_action} == "plan"){
       steps {
         container('terraform') {
           sh """
@@ -71,7 +71,7 @@ agent {
    }
 
     stage('Run terraform') {
-       if(${terrafrom_action}=="apply" || ${terrafrom_action}=="destroy"){
+       if(${terrafrom_action} == "apply" || ${terrafrom_action} == "destroy"){
       steps {
         container('terraform') {
           sh """
