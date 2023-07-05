@@ -58,14 +58,14 @@ stage('terraform init'){
         script{
           if(${terrafrom_action} == "plan"){
         container('terraform') {
-          sh """
+          sh '''
           if [[${resources}=="roles"]]; then
              pwd
              cd ./roles/ && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
              terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           fi
-          """
+          '''
         }
       }
     }
