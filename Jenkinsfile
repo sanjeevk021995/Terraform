@@ -53,6 +53,21 @@ agent {
         }
           }
       
+          stage('terraform plan') {
+      steps {
+        container('terraform') {
+          sh """
+          if [[${resources}=="roles"]]; then
+             pwd
+             cd ./roles/ && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          else
+             terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          fi
+          """
+        }
+      }
+    }
+
     stage('Run terraform') {
       steps {
         container('terraform') {
