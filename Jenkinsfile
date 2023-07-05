@@ -42,7 +42,7 @@ agent {
   steps {
         container('terraform') {
           sh """
-          if [ ${resources}=="roles"]; then
+          if [[${resources}=="roles"]]; then
              cd ./roles/ && pwd && terraform init 
              pwd
           else
@@ -57,7 +57,7 @@ agent {
       steps {
         container('terraform') {
           sh """
-          if [ ${resources}=="roles"]; then
+          if [[${resources}=="roles"]]; then
              pwd
              cd ./roles/ && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
