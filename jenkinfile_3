@@ -30,9 +30,9 @@ agent {
   }
 
 
-    parameters {
-        choice(choices: 's3,role,iam', description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE')
-        choice(choices: 'plan,apply,destroy', description: 'Select action', name: 'ACTION')
+   parameters {
+        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['s3', 'role', 'iam'])
+        choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'])
     }
 
     stages {
