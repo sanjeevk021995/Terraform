@@ -71,19 +71,7 @@ agent {
                             default:
                                 terraformPlan(directory)
                             }
-                        def getResourceDirectory(resource) {
-                         // Define the directory path for each resource
-                            switch (resource) {
-                                 case 's3':
-                                    return '${WORKSPACE}'
-                                    break;
-                                 case 'role':
-                                    return '${workspace}/roles/'
-                                    break;
-                                 case 'iam':
-                                    return '${workspace}/IAM/'
-    }
-}
+                        
                         }
                     }
                 }
@@ -92,6 +80,17 @@ agent {
     }
 }
 
+def getResourceDirectory(resource) {
+                         // Define the directory path for each resource
+                            switch (resource) {
+                                 case 's3':
+                                    return "."
+                                 case 'role':
+                                    return "./roles/"
+                                 case 'iam':
+                                    return "./IAM/"
+    }
+}
 
 
 def terraformPlan(directory) {
