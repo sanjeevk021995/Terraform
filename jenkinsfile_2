@@ -74,11 +74,11 @@ agent {
 def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
-        case 'resource1':
+        case 's3':
             return './'
-        case 'resource2':
+        case 'role':
             return './roles/'
-        case 'resource3':
+        case 'iam':
             return './IAM/'
         default:
             return './'
@@ -87,15 +87,15 @@ def getResourceDirectory(resource) {
 
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
-    sh 'cd ${directory} && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && cd ${directory} && pwd && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformApply(directory) {
     // Run 'terraform apply' command in the specified directory
-    sh 'cd ${directory} && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && cd ${directory} && pwd && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformDestroy(directory) {
     // Run 'terraform destroy' command in the specified directory
-    sh 'cd ${directory} && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && cd ${directory} && pwd && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
