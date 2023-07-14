@@ -89,11 +89,6 @@ def getResourceDirectory(resource) {
             break
         case 'iam':
             return './IAM/'
-            break
-        default:
-            
-            return './'
-
     }
 }
 
