@@ -92,7 +92,7 @@ def getResourceDirectory(resource) {
             return '${workspace}/IAM/'
     }
 }
-*/
+
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
     sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
