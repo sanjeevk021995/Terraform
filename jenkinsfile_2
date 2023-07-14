@@ -76,7 +76,7 @@ agent {
         }
     }
 }
-
+@NonCPS
 def getResourceDirectory(resource) {
                          // Define the directory path for each resource
                             switch (resource) {
@@ -92,7 +92,7 @@ def getResourceDirectory(resource) {
 
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
-    sh 'pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformApply(directory) {
