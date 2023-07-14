@@ -55,23 +55,35 @@ agent {
                         echo "Processing resource: ${resource}"
 
                         // Set the directory path based on the resource
-                      //  def directory = getResourceDirectory(resource)
+                        def directory = getResourceDirectory(resource)
 
                         // Run the Terraform command based on the selected action
                         switch (params.ACTION) {
                             case 'plan':
-                                sh 'cd ./'
-                                terraformPlan()
+                                terraformPlan(directory)
                                 break
                             case 'apply':
-                                terraformApply()
+                                terraformApply(directory)
                                 break
                             case 'destroy':
-                                terraformDestroy()
+                                terraformDestroy(directory)
                                 break
                             default:
-                                terraformPlan()
+                                terraformPlan(directory)
                             }
+                        def getResourceDirectory(resource) {
+                         // Define the directory path for each resource
+                            switch (resource) {
+                                 case 's3':
+                                    return '${WORKSPACE}'
+                                    break;
+                                 case 'role':
+                                    return '${workspace}/roles/'
+                                    break;
+                                 case 'iam':
+                                    return '${workspace}/IAM/'
+    }
+}
                         }
                     }
                 }
@@ -80,14 +92,19 @@ agent {
     }
 }
 
-def terraformPlan() {
-sh 'pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+
+
+def terraformPlan(directory) {
+    // Run 'terraform plan' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
-def terraformApply() {
-sh 'pwd && ls && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+def terraformApply(directory) {
+    // Run 'terraform apply' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
-def terraformDestroy() {
-sh 'pwd && ls && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+def terraformDestroy(directory) {
+    // Run 'terraform destroy' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
