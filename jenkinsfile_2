@@ -80,21 +80,6 @@ agent {
     }
 }
 
-/* def getResourceDirectory(resource) {
-    // Define the directory path for each resource
-    switch (resource) {
-        case 's3':
-            return '${WORKSPACE}'
-            break;
-        case 'role':
-            return '${workspace}/roles/'
-            break;
-        case 'iam':
-            return '${workspace}/IAM/'
-    }
-}
-*/
-
 def terraformPlan() {
     // Run 'terraform plan' command in the specified directory
     sh 'pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
