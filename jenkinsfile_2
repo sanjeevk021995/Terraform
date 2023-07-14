@@ -60,7 +60,7 @@ agent {
                         // Run the Terraform command based on the selected action
                         switch (params.ACTION) {
                             case 'plan':
-                                cd ./
+                                sh 'cd ./'
                                 terraformPlan()
                                 break
                             case 'apply':
