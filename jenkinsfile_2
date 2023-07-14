@@ -1,4 +1,5 @@
 pipeline {
+def workspace = pwd()
     environment {
         role_path = "./roles/"
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
@@ -82,16 +83,16 @@ def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
         case 's3':
-            return '.'
+            return '${workspace}'
             break
         case 'role':
-            return './roles/'
+            return '${workspace}/roles/'
             break
         case 'iam':
-            return './IAM/'
+            return '${workspace}/IAM/'
     }
 }
-
+*/
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
     sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
