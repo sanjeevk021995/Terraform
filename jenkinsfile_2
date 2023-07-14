@@ -82,7 +82,7 @@ def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
         case 's3':
-            return './'
+            return '.'
         case 'role':
             return './roles/'
         case 'iam':
@@ -101,10 +101,10 @@ def terraformPlan(directory) {
 
 def terraformApply(directory) {
     // Run 'terraform apply' command in the specified directory
-    sh 'pwd && cd ${directory} && pwd && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformDestroy(directory) {
     // Run 'terraform destroy' command in the specified directory
-    sh 'pwd && cd ${directory} && pwd && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
