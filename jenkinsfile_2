@@ -60,16 +60,13 @@ agent {
                         // Run the Terraform command based on the selected action
                         switch (params.ACTION) {
                             case 'plan':
-                                terraformPlan(directory)
-                                break
+                                return terraformPlan(directory)
                             case 'apply':
-                                terraformApply(directory)
-                                break
+                                return terraformApply(directory)
                             case 'destroy':
-                                terraformDestroy(directory)
-                                break
+                                return terraformDestroy(directory)
                             default:
-                                terraformPlan(directory)
+                                return terraformPlan(directory)
                             }
                         
                         }
