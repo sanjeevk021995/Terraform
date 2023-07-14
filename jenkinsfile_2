@@ -86,11 +86,11 @@ def terraformPlan() {
 }
 
 def terraformApply() {
-    // Run 'terraform apply' command in the specified directory
+   
     sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformDestroy() {
-    // Run 'terraform destroy' command in the specified directory
+    
     sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
