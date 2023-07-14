@@ -80,7 +80,7 @@ agent {
     }
 }
 
-/*def getResourceDirectory(resource) {
+/* def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
         case 's3':
