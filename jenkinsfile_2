@@ -1,3 +1,16 @@
+def getResourceDirectory(resource) {
+                         // Define the directory path for each resource
+                            switch (resource) {
+                                 case 's3':
+                                    return "."
+                                 case 'role':
+                                    return "./roles/"
+                                 case 'iam':
+                                    return "./IAM/"
+                                 default:
+                                    return null
+    }
+}
 pipeline {
 //def workspace = pwd()
     environment {
@@ -77,19 +90,6 @@ agent {
     }
 }
 
-def getResourceDirectory(resource) {
-                         // Define the directory path for each resource
-                            switch (resource) {
-                                 case 's3':
-                                    return "."
-                                 case 'role':
-                                    return "./roles/"
-                                 case 'iam':
-                                    return "./IAM/"
-                                 default:
-                                    return null
-    }
-}
 
 
 def terraformPlan(directory) {
