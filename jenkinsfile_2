@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['resource1', 'resource2', 'resource3'], defaultValue: 'resource1')
+        choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'], defaultValue: 'plan')
+    }
+
+    stages {
+        stage('Terraform') {
+            steps {
+                script {
+                    def selectedResources = params.TERRAFORM_RESOURCE.split(',')
+
+                    // Loop through selected resources and perform the desired action
+                    for (resource in selectedResources) {
+                        echo "Processing resource: ${resource}"
+
+                        // Set the directory path based on the resource
+                        def directory = getResourceDirectory(resource)
+
+                        // Run the Terraform command based on the selected action
+                        switch (params.ACTION) {
+                            case 'plan':
+                                terraformPlan(directory)
+                                break
+                            case 'apply':
+                                terraformApply(directory)
+                                break
+                            case 'destroy':
+                                terraformDestroy(directory)
+                                break
+                            default:
+                                echo "Invalid action selected"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+def getResourceDirectory(resource) {
+    // Define the directory path for each resource
+    switch (resource) {
+        case 'resource1':
+            return '/path/to/resource1'
+        case 'resource2':
+            return '/path/to/resource2'
+        case 'resource3':
+            return '/path/to/resource3'
+        default:
+            return ''
+    }
+}
+
+def terraformPlan(directory) {
+    // Run 'terraform plan' command in the specified directory
+    sh "cd ${directory} && terraform plan"
+}
+
+def terraformApply(directory) {
+    // Run 'terraform apply' command in the specified directory
+    sh "cd ${directory} && terraform apply"
+}
+
+def terraformDestroy(directory) {
+    // Run 'terraform destroy' command in the specified directory
+    sh "cd ${directory} && terraform destroy"
+}
