@@ -36,6 +36,12 @@ agent {
     }
 
     stages {
+
+        stage('checkout'){
+          steps{
+             checkout scmGit(branches: [[name: 'terraform-choice']], extensions: [], 
+                             userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
+          }
         stage('Terraform') {
             steps {
                  container('terraform') {
@@ -87,7 +93,7 @@ def getResourceDirectory(resource) {
 
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
-    sh 'pwd && cd ${directory} && pwd && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
 }
 
 def terraformApply(directory) {
