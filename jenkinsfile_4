@@ -1,0 +1,121 @@
+pipeline {
+    agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: terraform
+            image: hashicorp/terraform:1.5
+            command:
+            - bin/cat
+            tty: true
+            resources:
+              requests:
+                memory: "556Mi"
+                cpu: "400m"
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: $env.hashicorp/terraform
+            - name: AWS_SECRET_ACCESS_KEY
+              value: $env.AWS_SECRET_ACCESS_KEY
+        '''
+    }
+  }
+
+environment {
+    AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
+    TF_WORKSPACE_PREPROD = 'preprod'
+    TF_WORKSPACE_PROD = 'prod'
+}
+parameters {
+    choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['s3', 'role', 'iam'])
+    choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'])
+    choice(description: 'Select environment', name: 'ENVIRONMENT', choices: ['preprod', 'prod'])
+}
+stages {
+
+        stage('checkout'){
+          steps{
+             checkout scmGit(branches: [[name: 'terraform-choice']], extensions: [], 
+                             userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
+          }
+        }
+        stage('Terraform') {
+            steps {
+                 container('terraform') {
+                script {
+                    def selectedResources = params.TERRAFORM_RESOURCE.split(',')
+
+                    // Loop through selected resources and perform the desired action
+                    for (resource in selectedResources) {
+                        echo "Processing resource: ${resource}"
+
+                        // Set the directory path based on the resource
+                        def directory = getResourceDirectory(resource)
+
+                        // Run the Terraform command based on the selected action
+                        switch (params.ACTION) {
+                            case 'plan':
+                                return terraformPlan(directory)
+                            case 'apply':
+                                return terraformApply(directory)
+                            case 'destroy':
+                                return terraformDestroy(directory)
+                            default:
+                                return terraformPlan(directory)
+                            }
+                        
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+def getResourceDirectory(resource) {
+    // Define the directory path for each resource based on the environment
+    switch (params.ENVIRONMENT) {
+        case 'preprod':
+            switch (resource) {
+                case 's3':
+                    return './preprod'
+                case 'role':
+                    return './preprod/roles/'
+                case 'iam':
+                    return './preprod/IAM/'
+            }
+        case 'prod':
+            switch (resource) {
+                case 's3':
+                    return './prod'
+                case 'role':
+                    return './prod/roles/'
+                case 'iam':
+                    return './prod/IAM/'
+            }
+    }
+}
+def terraformPlan(directory) {
+    // Run 'terraform plan' command in the specified directory with the appropriate workspace
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform workspace select ${params.ENVIRONMENT} && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
+}
+
+def terraformApply(directory) {
+    // Run 'terraform apply' command in the specified directory with the appropriate workspace
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform workspace select ${params.ENVIRONMENT} && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
+}
+
+def terraformDestroy(directory) {
+    // Run 'terraform destroy' command in the specified directory with the appropriate workspace
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform workspace select ${params.ENVIRONMENT} && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
+}
