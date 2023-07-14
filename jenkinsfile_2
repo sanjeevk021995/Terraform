@@ -83,10 +83,13 @@ def getResourceDirectory(resource) {
     switch (resource) {
         case 's3':
             return '.'
+            break
         case 'role':
             return './roles/'
+            break
         case 'iam':
             return './IAM/'
+            break
         default:
             
             return './'
