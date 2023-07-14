@@ -1,14 +1,44 @@
 pipeline {
-    agent any
+    environment {
+        role_path = "./roles/"
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
+    }
+agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: terraform
+            image: hashicorp/terraform:1.5
+            command:
+            - bin/cat
+            tty: true
+            resources:
+              requests:
+                memory: "556Mi"
+                cpu: "400m"
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: $env.hashicorp/terraform
+            - name: AWS_SECRET_ACCESS_KEY
+              value: $env.AWS_SECRET_ACCESS_KEY
+        '''
+    }
+  }
 
     parameters {
-        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['resource1', 'resource2', 'resource3'])
+        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['s3', 'role', 'iam'])
         choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'])
     }
 
     stages {
         stage('Terraform') {
             steps {
+                 container('terraform') {
                 script {
                     def selectedResources = params.TERRAFORM_RESOURCE.split(',')
 
@@ -31,7 +61,8 @@ pipeline {
                                 terraformDestroy(directory)
                                 break
                             default:
-                                echo "Invalid action selected"
+                                terraformPlan(directory)
+                            }
                         }
                     }
                 }
@@ -44,13 +75,13 @@ def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
         case 'resource1':
-            return '/path/to/resource1'
+            return './'
         case 'resource2':
-            return '/path/to/resource2'
+            return './roles/'
         case 'resource3':
-            return '/path/to/resource3'
+            return './IAM/'
         default:
-            return ''
+            return './'
     }
 }
 
