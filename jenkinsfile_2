@@ -1,5 +1,5 @@
 pipeline {
-def workspace = pwd()
+//def workspace = pwd()
     environment {
         role_path = "./roles/"
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
@@ -83,11 +83,11 @@ def getResourceDirectory(resource) {
     // Define the directory path for each resource
     switch (resource) {
         case 's3':
-            return '${workspace}'
-            break
+            return '${WORKSPACE}'
+            break;
         case 'role':
             return '${workspace}/roles/'
-            break
+            break;
         case 'iam':
             return '${workspace}/IAM/'
     }
