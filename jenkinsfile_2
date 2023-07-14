@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     parameters {
-        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['resource1', 'resource2', 'resource3'], defaultValue: 'resource1')
-        choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'], defaultValue: 'plan')
+        choice(description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE', choices: ['resource1', 'resource2', 'resource3'])
+        choice(description: 'Select action', name: 'ACTION', choices: ['plan', 'apply', 'destroy'])
     }
 
     stages {
