@@ -50,13 +50,13 @@ agent {
                     def resourceDirectory = ''
                     switch (params.TERRAFORM_RESOURCE) {
                         case 's3':
-                            resourceDirectory = "/home/jenkins/agent/workspace/choice_parameter"
+                            resourceDirectory = './'
                             break
                         case 'role':
-                            resourceDirectory = '/home/jenkins/agent/workspace/choice_parameter/roles/'
+                            resourceDirectory = './roles/'
                             break
                         case 'iam':
-                            resourceDirectory = '/home/jenkins/agent/workspace/choice_parameter/IAM/'
+                            resourceDirectory = './IAM/'
                             break
                         default:
                             echo "Invalid resource selected"
@@ -88,15 +88,21 @@ agent {
 
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
-    sh 'echo ${directory} && pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    echo ${directory} && pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
 
 def terraformApply(directory) {
     // Run 'terraform apply' command in the specified directory
-    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
 
 def terraformDestroy(directory) {
     // Run 'terraform destroy' command in the specified directory
-    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
