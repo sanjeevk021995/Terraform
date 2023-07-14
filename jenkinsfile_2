@@ -76,7 +76,7 @@ agent {
         }
     }
 }
-@NonCPS
+
 def getResourceDirectory(resource) {
                          // Define the directory path for each resource
                             switch (resource) {
@@ -86,6 +86,8 @@ def getResourceDirectory(resource) {
                                     return "./roles/"
                                  case 'iam':
                                     return "./IAM/"
+                                 default:
+                                    return null
     }
 }
 
