@@ -1,0 +1,102 @@
+pipeline {
+     environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
+    }
+agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1
+        kind: Pod
+        spec:
+          containers:
+          - name: terraform
+            image: hashicorp/terraform:1.5
+            command:
+            - bin/cat
+            tty: true
+            resources:
+              requests:
+                memory: "556Mi"
+                cpu: "400m"
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              value: $env.hashicorp/terraform
+            - name: AWS_SECRET_ACCESS_KEY
+              value: $env.AWS_SECRET_ACCESS_KEY
+        '''
+    }
+  }
+
+
+    parameters {
+        choice(choices: 's3,role,iam', description: 'Select Terraform resource', name: 'TERRAFORM_RESOURCE')
+        choice(choices: 'plan,apply,destroy', description: 'Select action', name: 'ACTION')
+    }
+
+    stages {
+        
+        stage('checkout'){
+          steps{
+             checkout scmGit(branches: [[name: 'terraform-choice']], extensions: [], 
+                             userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/sanjeevk021995/Terraform.git']])
+          }
+        }
+        stage('Terraform') {
+            steps {
+                container('terraform') {
+                script {
+                    def resourceDirectory = ''
+                    switch (params.TERRAFORM_RESOURCE) {
+                        case 's3':
+                            resourceDirectory = './'
+                            break
+                        case 'role':
+                            resourceDirectory = './roles/'
+                            break
+                        case 'iam':
+                            resourceDirectory = './IAM/'
+                            break
+                        default:
+                            echo "Invalid resource selected"
+                            return
+                    }
+
+                    echo "Processing resource: ${params.TERRAFORM_RESOURCE}"
+
+                    // Run the Terraform command based on the selected action
+                    switch (params.ACTION) {
+                        case 'plan':
+                            terraformPlan(resourceDirectory)
+                            break
+                        case 'apply':
+                            terraformApply(resourceDirectory)
+                            break
+                        case 'destroy':
+                            terraformDestroy(resourceDirectory)
+                            break
+                        default:
+                            echo "Invalid action selected"
+                    }
+                }
+            }
+          }
+        }
+    }
+}
+
+def terraformPlan(directory) {
+    // Run 'terraform plan' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+}
+
+def terraformApply(directory) {
+    // Run 'terraform apply' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+}
+
+def terraformDestroy(directory) {
+    // Run 'terraform destroy' command in the specified directory
+    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+}
