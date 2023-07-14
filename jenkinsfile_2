@@ -1,20 +1,5 @@
-def getResourceDirectory(resource) {
-                         // Define the directory path for each resource
-                            switch (resource) {
-                                 case 's3':
-                                    return "."
-                                 case 'role':
-                                    return "./roles/"
-                                 case 'iam':
-                                    return "./IAM/"
-                                 default:
-                                    return null
-    }
-}
 pipeline {
-//def workspace = pwd()
     environment {
-        role_path = "./roles/"
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
@@ -90,19 +75,35 @@ agent {
     }
 }
 
-
+def getResourceDirectory(resource) {
+                         // Define the directory path for each resource
+                            switch (resource) {
+                                 case 's3':
+                                    return '.'
+                                 case 'role':
+                                    return './roles/'
+                                 case 'iam':
+                                    return './IAM/'
+    }
+}
 
 def terraformPlan(directory) {
     // Run 'terraform plan' command in the specified directory
-    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    echo ${directory} && pwd && ls && cd ${directory} && pwd && ls && terraform init  && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
 
 def terraformApply(directory) {
     // Run 'terraform apply' command in the specified directory
-    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform apply -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
 
 def terraformDestroy(directory) {
     // Run 'terraform destroy' command in the specified directory
-    sh 'pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"'
+    sh """
+    pwd && ls && cd ${directory} && pwd && ls && terraform init && terraform destroy -auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+    """
 }
