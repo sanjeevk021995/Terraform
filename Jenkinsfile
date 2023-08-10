@@ -1,9 +1,13 @@
 pipeline {
     environment {
         role_path = "./roles/"
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_ROLE_ARN = credentials('AWS_ROLE_ARN')
+        AWS_ACCESS_KEY_ID_PP    = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY_PP = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ROLE_ARN_PP = credentials('AWS_ROLE_ARN')
+
+        AWS_ACCESS_KEY_ID_P    = credentials('AWS_ACCESS_KEY_ID_P')
+        AWS_SECRET_ACCESS_KEY_P = credentials('AWS_SECRET_ACCESS_KEY_P')
+        AWS_ROLE_ARN_P = credentials('AWS_ROLE_ARN_P')
     }
 agent {
     kubernetes {
@@ -12,7 +16,7 @@ agent {
         kind: Pod
         spec:
           containers:
-          - name: terraform
+          - name: terraform-preprod
             image: hashicorp/terraform:1.5
             command:
             - bin/cat
@@ -23,9 +27,9 @@ agent {
                 cpu: "400m"
             env:
             - name: AWS_ACCESS_KEY_ID
-              value: $env.hashicorp/terraform
+              value: $env.AWS_ACCESS_KEY_ID_PP
             - name: AWS_SECRET_ACCESS_KEY
-              value: $env.AWS_SECRET_ACCESS_KEY
+              value: $env.AWS_SECRET_ACCESS_KEY_PP
         '''
     }
   }
@@ -38,66 +42,30 @@ agent {
           }
       }*/
       
-stage('terraform init'){
-     steps { 
-       script{
-        container('terraform') {
+
+stage('terraform preprod') {
+
+      steps {
+        script{
+        container('terraform-preprod') {
+            if ( "${ENV}" == "preprod") {
         sh '''
-          if [[ ${resources} == "roles" ]];
+          terraform workspace new ${ENV}
+          if [[ ${terraform_action} == "init" ]];
           then
                  cd ${role_path} && pwd && terraform init
-                 pwd
-          else 
-                 terraform init && pwd
-          fi
-          '''
-        }
-        }
-       }
-      }
-stage('terraform plan') {
-    /*when {
-        expression {
-        ${terraform_action} == "plan" 
-        }
-    }*/
-      steps {
-        script{
-        container('terraform') {
-        sh '''
-          if [[ ${terraform_action} == "plan" && ${resources} == "roles" ]];
+          elif [[ ${terraform_action} == "plan" ]];
           then
-                 pwd
-                 cd ${role_path} && pwd && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
-          elif [[ ${terraform_action} == "plan" && ${resources} == "s3" ]];
+                 cd ${role_path} && pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+          elif [[ ${terraform_action} == "apply" ]];
           then
-                 pwd && ls -l && terraform ${terraform_action} -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+                cd ${role_path} && pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
           else
-                echo "moving to terraform apply"
+                echo "select correct option"      
           fi
           '''
-        
-        }
-      }
-    }
-   }
 
-      stage('terraform action') {
-      steps {
-        script{
-        container('terraform') {
-        sh '''
-          if [[ ${terraform_action} == "apply" && ${resources} == "roles" || ${terraform_action} == "destroy" && ${resources} == "roles" ]];
-          then
-                 pwd
-                 cd ${role_path} && pwd && terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
-          elif [[ ${terraform_action} == "apply" || ${terraform_action} == "destroy" ]];
-          then
-                 terraform ${terraform_action} --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
-          else 
-                 echo "skipping the terraform action only plan is executed"
-          fi
-          '''
+            }
         }
       }
     }
