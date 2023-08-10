@@ -52,6 +52,7 @@ stage('terraform preprod') {
         sh '''
           terraform workspace new ${ENV}
           terraform workspace show
+          terraform init
           if [[ ${terraform_action} == "init" ]];
           then
                  cd ${role_path} && pwd && terraform init -reconfigure
