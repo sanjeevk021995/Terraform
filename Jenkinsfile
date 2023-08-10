@@ -3,7 +3,7 @@ pipeline {
         role_path = "./roles/"
         AWS_ACCESS_KEY_ID_PP    = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY_PP = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_ROLE_ARN_PP = credentials('AWS_ROLE_ARN')
+     
 
       //  AWS_ACCESS_KEY_ID_P    = credentials('AWS_ACCESS_KEY_ID_P')
         //AWS_SECRET_ACCESS_KEY_P = credentials('AWS_SECRET_ACCESS_KEY_P')
@@ -50,13 +50,13 @@ stage('terraform preprod') {
         container('terraform-preprod') {
             if ( "${ENV}" == "preprod") {
         sh '''
-         terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"  -backend-config="role_arn=$AWS_ROLE_ARN_PP" 
+         terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"  
           terraform workspace select ${ENV}
           terraform workspace show
           
           if [[ ${terraform_action} == "init" ]];
           then
-                 pwd && terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"  -backend-config="role_arn=$AWS_ROLE_ARN_PP" 
+                 pwd && terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"   
           elif [[ ${terraform_action} == "plan" ]];
           then
                  pwd && terraform plan 
