@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "state-file-terraform-dev"
+    bucket = "sample-dev-env-state"
     key    = "s3-bucket-test.tfstate"
     region = "us-east-2"
   }
