@@ -54,7 +54,7 @@ stage('terraform preprod') {
           terraform workspace show
           if [[ ${terraform_action} == "init" ]];
           then
-                 cd ${role_path} && pwd && terraform refresh && terraform init
+                 cd ${role_path} && pwd && terraform init -reconfigure
           elif [[ ${terraform_action} == "plan" ]];
           then
                  cd ${role_path} && pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
