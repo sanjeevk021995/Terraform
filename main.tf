@@ -19,8 +19,9 @@ resource "aws_s3_bucket" "testbucket-sam-test" {
 
   tags = {
     Name         = "S3 Bucket Created by TS"
-    Environment  = "Test"
+    Environment  = "PREPROD"
     SecurityZone = "na"
+    
   }
 }
 

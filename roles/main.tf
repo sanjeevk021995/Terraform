@@ -20,6 +20,7 @@ resource "aws_s3_bucket" "testbucket-sam-test-roles" {
     Name         = "S3 Bucket Created by TS"
     Environment  = "test-role"
     SecurityZone = "na"
+    tag          = "PROD"
   }
 }
 
