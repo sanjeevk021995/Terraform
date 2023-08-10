@@ -50,7 +50,7 @@ stage('terraform preprod') {
         container('terraform-preprod') {
             if ( "${ENV}" == "preprod") {
         sh '''
-         terraform init
+         terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"  -backend-config="role_arn=$AWS_ROLE_ARN_PP" 
           terraform workspace new ${ENV}
           terraform workspace show
           
