@@ -7,11 +7,7 @@ assume_role {
   
 }
 
-variable "AWS_ROLE_ARN" {
-  description = "aws arn"
-  type        = string
-  sensitive   = true
-}
+
 
 
 resource "aws_s3_bucket" "testbucket-sam-test" {
