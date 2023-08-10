@@ -5,9 +5,9 @@ pipeline {
         AWS_SECRET_ACCESS_KEY_PP = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_ROLE_ARN_PP = credentials('AWS_ROLE_ARN')
 
-        AWS_ACCESS_KEY_ID_P    = credentials('AWS_ACCESS_KEY_ID_P')
-        AWS_SECRET_ACCESS_KEY_P = credentials('AWS_SECRET_ACCESS_KEY_P')
-        AWS_ROLE_ARN_P = credentials('AWS_ROLE_ARN_P')
+      //  AWS_ACCESS_KEY_ID_P    = credentials('AWS_ACCESS_KEY_ID_P')
+        //AWS_SECRET_ACCESS_KEY_P = credentials('AWS_SECRET_ACCESS_KEY_P')
+        //AWS_ROLE_ARN_P = credentials('AWS_ROLE_ARN_P')
     }
 agent {
     kubernetes {
@@ -56,10 +56,10 @@ stage('terraform preprod') {
                  cd ${role_path} && pwd && terraform init
           elif [[ ${terraform_action} == "plan" ]];
           then
-                 cd ${role_path} && pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+                 cd ${role_path} && pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
           elif [[ ${terraform_action} == "apply" ]];
           then
-                cd ${role_path} && pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN"
+                cd ${role_path} && pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
           else
                 echo "select correct option"      
           fi
