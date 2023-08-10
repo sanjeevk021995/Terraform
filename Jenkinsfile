@@ -50,9 +50,10 @@ stage('terraform preprod') {
         container('terraform-preprod') {
             if ( "${ENV}" == "preprod") {
         sh '''
+         terraform init
           terraform workspace new ${ENV}
           terraform workspace show
-          terraform init -migrate-state
+          
           if [[ ${terraform_action} == "init" ]];
           then
                  pwd && terraform init -reconfigure
