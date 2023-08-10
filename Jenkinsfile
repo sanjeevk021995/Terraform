@@ -59,10 +59,10 @@ stage('terraform preprod') {
                  pwd && terraform init -backend-config="access_key=$AWS_ACCESS_KEY_ID_PP"   -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY_PP"  -backend-config="role_arn=$AWS_ROLE_ARN_PP" 
           elif [[ ${terraform_action} == "plan" ]];
           then
-                 pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
+                 pwd && terraform plan 
           elif [[ ${terraform_action} == "apply" ]];
           then
-                pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
+                pwd && terraform apply --auto-approve 
           else
                 echo "select correct option"      
           fi
