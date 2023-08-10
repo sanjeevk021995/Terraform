@@ -50,18 +50,19 @@ stage('terraform preprod') {
         container('terraform-preprod') {
             if ( "${ENV}" == "preprod") {
         sh '''
+          cd ${role_path}
           terraform workspace new ${ENV}
           terraform workspace show
           terraform init
           if [[ ${terraform_action} == "init" ]];
           then
-                 cd ${role_path} && pwd && terraform init -reconfigure
+                 pwd && terraform init -reconfigure
           elif [[ ${terraform_action} == "plan" ]];
           then
-                 cd ${role_path} && pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
+                 pwd && terraform plan -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
           elif [[ ${terraform_action} == "apply" ]];
           then
-                cd ${role_path} && pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
+                pwd && terraform apply --auto-approve -var "AWS_ROLE_ARN=$AWS_ROLE_ARN_PP"
           else
                 echo "select correct option"      
           fi
