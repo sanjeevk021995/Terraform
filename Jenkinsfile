@@ -50,7 +50,6 @@ stage('terraform preprod') {
         container('terraform-preprod') {
             if ( "${ENV}" == "preprod") {
         sh '''
-          cd ${role_path}
           terraform workspace new ${ENV}
           terraform workspace show
           terraform init
